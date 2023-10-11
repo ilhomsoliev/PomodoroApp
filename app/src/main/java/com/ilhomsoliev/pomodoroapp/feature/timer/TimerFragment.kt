@@ -2,9 +2,11 @@ package com.ilhomsoliev.pomodoroapp.feature.timer
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.ilhomsoliev.pomodoroapp.R
 import com.ilhomsoliev.pomodoroapp.shared.base_fragment.AbsMainActivityFragment
 import com.ilhomsoliev.pomodoroapp.databinding.FragmentTimerBinding
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer) {
@@ -19,7 +21,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer) {
         setupListeners()
         baseViewModel.timerStateFlow.onEach {
             binding.timerText.text = it.displaySeconds
-        }
+        }.launchIn(lifecycleScope)
     }
 
     private fun setupListeners() {

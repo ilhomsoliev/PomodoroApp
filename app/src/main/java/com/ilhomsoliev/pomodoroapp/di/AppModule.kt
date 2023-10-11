@@ -19,8 +19,5 @@ private val mainModule = module {
     single {
         androidContext().contentResolver
     }
-    /*single {
-        RetroWebServer(get())
-    }*/
 }
 val appModules = listOf(mainModule, dataModule, viewModules)
