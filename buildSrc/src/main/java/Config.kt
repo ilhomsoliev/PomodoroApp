@@ -8,7 +8,7 @@ object Config {
     const val versionCode = 1
     const val versionName = "1.0"
 
-    const val applicationId = "com.speakingclub.app"
+    const val applicationId = "com.ilhomsoliev.pomodoroapp"
     const val namespacePrefix = applicationId
 
     const val jvmTarget = "17"

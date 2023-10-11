@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PomodoroApp"
 include(":app")
- 
+include(":appthemehelper")
