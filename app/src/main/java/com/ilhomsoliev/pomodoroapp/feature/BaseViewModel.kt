@@ -21,7 +21,11 @@ class BaseViewModel : ViewModel() {
 
     private var job: Job? = null
 
+    val isTimerRunning
+        get() = !(job == null || job?.isCompleted == true)
+
     fun toggleTime(totalSeconds: Int) {
+
         job = if (job == null || job?.isCompleted == true) {
             viewModelScope.launch {
                 initTimer(totalSeconds) { remainingTime -> TimerState(remainingTime, totalSeconds) }

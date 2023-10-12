@@ -17,16 +17,21 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val homeBinding = FragmentTimerBinding.bind(view)
+
         _binding = TimerBinding(homeBinding)
+
         setupListeners()
+
         baseViewModel.timerStateFlow.onEach {
             binding.timerText.text = it.displaySeconds
         }.launchIn(lifecycleScope)
+        binding.controlButton.text = baseViewModel.isTimerRunning.toString()
     }
 
     private fun setupListeners() {
         binding.controlButton.setOnClickListener {
             baseViewModel.toggleTime(60000)
+            binding.controlButton.text = baseViewModel.isTimerRunning.toString()
         }
     }
 }
