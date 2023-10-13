@@ -8,7 +8,7 @@ import com.ilhomsoliev.pomodoroapp.core.generalThemeValue
 
 @StyleRes
 fun Context.getThemeResValue(): Int =
-    R.style.Theme_PomodoroApp
+    R.style.AppTheme
 // TODO
 /*if (PreferenceUtil.materialYou) {
     if (generalThemeValue == ThemeMode.BLACK)

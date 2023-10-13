@@ -35,7 +35,7 @@
         android:name=".app.PomodoroApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PomodoroApp"
+        android:theme="@style/Theme.AppCompat"
         tools:targetApi="31">
         <activity
             android:name=".app.MainActivity"
@@ -46,6 +46,40 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".data.timer.TimerService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.ilhomsoliev.pomodoroapp"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+<!--
+        <receiver
+            android:name=".settings.reminders.BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".settings.reminders.ReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="buddy.reminder_action" />
+            </intent-filter>
+        </receiver>
+-->
+
     </application>
 
 </manifest>

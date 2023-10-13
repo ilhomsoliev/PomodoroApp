@@ -183,6 +183,10 @@ fun DependencyHandlerScope.dataStore() = implementation(
     "androidx.datastore:datastore-preferences:${dataStoreVer}"
 )
 
+fun DependencyHandlerScope.eventbus() = implementation(
+    "org.greenrobot:eventbus:3.3.1"
+)
+
 
 val ktorVer = "2.2.1"
 fun DependencyHandlerScope.ktor() = implementation(

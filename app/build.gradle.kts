@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+
 }
 
 baseConfig()
@@ -23,18 +24,19 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":appthemehelper")))
+    implementation("androidx.lifecycle:lifecycle-service:2.6.2")
     androidBase(false)
     xmlNavigation()
     lifecycle()
     material_dialog()
     androidX()
 
+    // EventBus
+    eventbus()
+
     customactivityoncrash()
 
-    // implementation("androidx.core:core-ktx:1.9.0")
-    // implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
-    // implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PomodoroApp</string>
+    <string name="label_unlabeled" translatable="false">unlabeled</string>
+
 </resources>
