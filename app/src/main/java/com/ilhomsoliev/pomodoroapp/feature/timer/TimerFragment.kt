@@ -1,11 +1,13 @@
 package com.ilhomsoliev.pomodoroapp.feature.timer
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.ilhomsoliev.pomodoroapp.R
-import com.ilhomsoliev.pomodoroapp.shared.base_fragment.AbsMainActivityFragment
+import com.ilhomsoliev.pomodoroapp.core.PreferenceUtil
 import com.ilhomsoliev.pomodoroapp.databinding.FragmentTimerBinding
+import com.ilhomsoliev.pomodoroapp.shared.base_fragment.AbsMainActivityFragment
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -19,6 +21,13 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer) {
         val homeBinding = FragmentTimerBinding.bind(view)
 
         _binding = TimerBinding(homeBinding)
+
+        if (PreferenceUtil.isFirstRun) {
+            // show app intro
+            /*val i = Intent(this, MainIntroActivity::class.java)
+            startActivity(i)
+            PreferenceUtil.isFirstRun = false*/
+        }
 
         setupListeners()
 

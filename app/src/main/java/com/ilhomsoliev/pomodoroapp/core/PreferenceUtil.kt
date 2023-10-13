@@ -27,6 +27,14 @@ object PreferenceUtil {
             putString(LANGUAGE_NAME, value)
         }
 
+    var isFirstRun: Boolean
+        get() = sharedPreferences.getBoolean(
+            IS_FIRST_RUN, true
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(IS_FIRST_RUN, value)
+        }
+
     val isFullScreenMode
         get() = sharedPreferences.getBoolean(
             TOGGLE_FULL_SCREEN, false
