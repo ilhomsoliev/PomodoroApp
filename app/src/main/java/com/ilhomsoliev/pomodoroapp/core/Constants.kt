@@ -39,3 +39,20 @@ const val GENERAL_THEME = "general_theme"
 const val BLACK_THEME = "black_theme"
 const val MATERIAL_YOU = "material_you"
 const val LOCALE_AUTO_STORE_ENABLED = "locale_auto_store_enabled"
+const val PRIORITY_ALARM = "pref_priority_alarm"
+const val VIBRATION_TYPE = "pref_vibration_type"
+const val AUTO_START_BREAK = "pref_auto_start_break"
+const val AUTO_START_WORK = "pref_auto_start_work"
+const val DISABLE_WIFI = "pref_disable_wifi"
+const val DND_MODE = "pref_dnd"
+const val DISABLE_SOUND_AND_VIBRATION = "pref_disable_sound_and_vibration"
+const val ENABLE_RINGTONE = "pref_enable_ringtone"
+const val RINGTONE_WORK_FINISHED = "pref_notification_sound_work"
+const val RINGTONE_BREAK_FINISHED = "pref_notification_sound_break"
+
+
+
+
+
+
+

@@ -186,6 +186,9 @@ fun DependencyHandlerScope.dataStore() = implementation(
 fun DependencyHandlerScope.eventbus() = implementation(
     "org.greenrobot:eventbus:3.3.1"
 )
+fun DependencyHandlerScope.gson() = implementation(
+    "com.google.code.gson:gson:2.9.0"
+)
 
 
 val ktorVer = "2.2.1"

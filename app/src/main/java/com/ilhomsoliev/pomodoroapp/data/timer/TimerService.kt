@@ -10,13 +10,13 @@ import android.os.PowerManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.lifecycleScope
 import com.ilhomsoliev.pomodoroapp.app.MainActivity
 import com.ilhomsoliev.pomodoroapp.core.Constants
 import com.ilhomsoliev.pomodoroapp.core.PreferenceUtil
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.koin.core.component.KoinComponent
 import org.koin.mp.KoinPlatformTools
 import java.lang.Runnable
 import java.util.concurrent.TimeUnit
@@ -24,20 +24,16 @@ import java.util.concurrent.TimeUnit
 /**
  * Class representing the foreground service which triggers the countdown timer and handles events.
  */
-class TimerService : LifecycleService() {
+class TimerService : LifecycleService(), KoinComponent {
 
-/*
-    @Inject
-    lateinit var notificationHelper: NotificationHelper
+    private val notificationHelper by getKoin().inject<NotificationHelper>()
 
-    @Inject
-    lateinit var ringtoneAndVibrationPlayer: RingtoneAndVibrationPlayer
-*/
+    private val ringtoneAndVibrationPlayer by getKoin().inject<RingtoneAndVibrationPlayer>()
 
 
-    var preferenceHelper = PreferenceUtil
+    private var preferenceHelper = PreferenceUtil
 
-    val currentSessionManager: CurrentSessionManager by lazy {
+    private val currentSessionManager: CurrentSessionManager by lazy {
         KoinPlatformTools.defaultContext().get().get<CurrentSessionManager>()
     }
 
@@ -95,18 +91,19 @@ class TimerService : LifecycleService() {
      */
     @Subscribe
     fun onEvent(o: Any) {
+        Log.d(TAG, "onEvent " + o.javaClass.simpleName)
         when (o) {
             is Constants.OneMinuteLeft -> {
                 onOneMinuteLeft()
             }
 
             is Constants.FinishWorkEvent -> {
-                Log.d(TAG, "onEvent " + o.javaClass.simpleName)
+                // Log.d(TAG, "onEvent " + o.javaClass.simpleName)
                 onFinishEvent(SessionType.WORK)
             }
 
             is Constants.FinishBreakEvent -> {
-                Log.d(TAG, "onEvent " + o.javaClass.simpleName)
+                //  Log.d(TAG, "onEvent " + o.javaClass.simpleName)
                 onFinishEvent(SessionType.BREAK)
             }
 
@@ -119,7 +116,7 @@ class TimerService : LifecycleService() {
             }
 
             is Constants.ClearNotificationEvent -> {
-                Log.d(TAG, "onEvent " + o.javaClass.simpleName)
+                // Log.d(TAG, "onEvent " + o.javaClass.simpleName)
                 /*notificationHelper.clearNotification()
                 ringtoneAndVibrationPlayer.stop()*/
             }
@@ -130,25 +127,25 @@ class TimerService : LifecycleService() {
         var sessionTypeTmp = sessionType
         EventBus.getDefault().post(Constants.StartSessionEvent())
         if (sessionTypeTmp !== SessionType.WORK
-            /*&& preferenceHelper.isLongBreakEnabled()
-            && preferenceHelper.itsTimeForLongBreak()*/
+        /*&& preferenceHelper.isLongBreakEnabled()
+        && preferenceHelper.itsTimeForLongBreak()*/
         ) {
             sessionTypeTmp = SessionType.LONG_BREAK
         }
         Log.d(TAG, "onStartEvent: $sessionTypeTmp")
         currentSessionManager.startTimer(sessionTypeTmp)
         if (sessionTypeTmp === SessionType.WORK) {
-          /*  if (preferenceHelper.isWiFiDisabled()) {
+            if (preferenceHelper.isWiFiDisabled) {
                 toggleWifi(false)
             }
-            if (preferenceHelper.isSoundAndVibrationDisabled()) {
+            if (preferenceHelper.isSoundAndVibrationDisabled) {
                 toggleSound(false)
             }
-            if (preferenceHelper.isDndModeActive()) {
+            if (preferenceHelper.isDndModeActive) {
                 toggleDndMode(false)
-            }*/
+            }
         }
-        /*if (!preferenceHelper.isAutoStartWork() && !preferenceHelper.isAutoStartBreak()) {
+        if (!preferenceHelper.isAutoStartWork && !preferenceHelper.isAutoStartBreak) {
             ringtoneAndVibrationPlayer.stop()
         }
         notificationHelper.clearNotification()
@@ -156,7 +153,7 @@ class TimerService : LifecycleService() {
             NotificationHelper.GOODTIME_NOTIFICATION_ID, notificationHelper.getInProgressBuilder(
                 currentSessionManager.currentSession
             ).build()
-        )*/
+        )
     }
 
     private fun onToggleEvent() {
@@ -249,15 +246,15 @@ class TimerService : LifecycleService() {
             this@TimerService.hashCode().toString() + " onSkipEvent " + sessionType.toString()
         )
         if (sessionType === SessionType.WORK) {
-          /*  if (preferenceHelper.isWiFiDisabled()) {
-                toggleWifi(true)
-            }
-            if (preferenceHelper.isSoundAndVibrationDisabled()) {
-                toggleSound(true)
-            }
-            if (preferenceHelper.isDndModeActive()) {
-                toggleDndMode(true)
-            }*/
+            /*  if (preferenceHelper.isWiFiDisabled()) {
+                  toggleWifi(true)
+              }
+              if (preferenceHelper.isSoundAndVibrationDisabled()) {
+                  toggleSound(true)
+              }
+              if (preferenceHelper.isDndModeActive()) {
+                  toggleDndMode(true)
+              }*/
         }
         currentSessionManager.stopTimer()
         stopForeground()
@@ -267,21 +264,21 @@ class TimerService : LifecycleService() {
     }
 
     private fun updateLongBreakStreak(sessionType: SessionType?) {
-       /* if (preferenceHelper.isLongBreakEnabled()) {
-            if (sessionType === SessionType.LONG_BREAK) {
-                preferenceHelper.resetCurrentStreak()
-            } else if (sessionType === SessionType.WORK) {
-                preferenceHelper.incrementCurrentStreak()
-            }
-            Log.d(
-                TAG,
-                "preferenceHelper.getCurrentStreak: " + preferenceHelper.getCurrentStreak()
-            )
-            Log.d(
-                TAG,
-                "preferenceHelper.lastWorkFinishedAt: " + preferenceHelper.lastWorkFinishedAt()
-            )
-        }*/
+        /* if (preferenceHelper.isLongBreakEnabled()) {
+             if (sessionType === SessionType.LONG_BREAK) {
+                 preferenceHelper.resetCurrentStreak()
+             } else if (sessionType === SessionType.WORK) {
+                 preferenceHelper.incrementCurrentStreak()
+             }
+             Log.d(
+                 TAG,
+                 "preferenceHelper.getCurrentStreak: " + preferenceHelper.getCurrentStreak()
+             )
+             Log.d(
+                 TAG,
+                 "preferenceHelper.lastWorkFinishedAt: " + preferenceHelper.lastWorkFinishedAt()
+             )
+         }*/
     }
 
     private fun acquireScreenLock() {
@@ -294,9 +291,9 @@ class TimerService : LifecycleService() {
     }
 
     private fun updateNotificationProgress() {
-       /* notificationHelper.updateNotificationProgress(
-            currentSessionManager.currentSession
-        )*/
+        /* notificationHelper.updateNotificationProgress(
+             currentSessionManager.currentSession
+         )*/
     }
 
     private fun toggleSound(restore: Boolean) {

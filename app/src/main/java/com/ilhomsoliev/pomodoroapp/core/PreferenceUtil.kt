@@ -10,6 +10,15 @@ import com.ilhomsoliev.pomodoroapp.data.local.Label
 import com.ilhomsoliev.pomodoroapp.data.timer.SessionType
 
 object PreferenceUtil {
+    fun registerOnSharedPreferenceChangedListener(
+        listener: SharedPreferences.OnSharedPreferenceChangeListener,
+    ) = sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+
+
+    fun unregisterOnSharedPreferenceChangedListener(
+        changeListener: SharedPreferences.OnSharedPreferenceChangeListener,
+    ) = sharedPreferences.unregisterOnSharedPreferenceChangeListener(changeListener)
+
     // TODO move to another package
     fun getSessionDuration(sessionType: SessionType?): Long {
         val duration: Long = when (sessionType) {
@@ -87,16 +96,6 @@ object PreferenceUtil {
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
         PomodoroApplication.getContext()
     )
-
-    fun registerOnSharedPreferenceChangedListener(
-        listener: SharedPreferences.OnSharedPreferenceChangeListener,
-    ) = sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
-
-
-    fun unregisterOnSharedPreferenceChangedListener(
-        changeListener: SharedPreferences.OnSharedPreferenceChangeListener,
-    ) = sharedPreferences.unregisterOnSharedPreferenceChangeListener(changeListener)
-
     var languageCode: String
         get() = sharedPreferences.getString(LANGUAGE_NAME, "auto") ?: "auto"
         set(value) = sharedPreferences.edit {
@@ -109,6 +108,29 @@ object PreferenceUtil {
         )
         set(value) = sharedPreferences.edit {
             putBoolean(IS_FIRST_RUN, value)
+        }
+    var isRingtoneEnabled: Boolean
+        get() = sharedPreferences.getBoolean(
+            ENABLE_RINGTONE, true
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(ENABLE_RINGTONE, value)
+        }
+
+    var getNotificationSoundWorkFinished: String
+        get() = sharedPreferences.getString(
+            RINGTONE_WORK_FINISHED, ""
+        ) ?: ""
+        set(value) = sharedPreferences.edit {
+            putString(RINGTONE_WORK_FINISHED, value)
+        }
+
+    var getNotificationSoundBreakFinished: String
+        get() = sharedPreferences.getString(
+            RINGTONE_BREAK_FINISHED, ""
+        ) ?: ""
+        set(value) = sharedPreferences.edit {
+            putString(RINGTONE_BREAK_FINISHED, value)
         }
 
     val isFullScreenMode
@@ -130,8 +152,67 @@ object PreferenceUtil {
             putBoolean(LOCALE_AUTO_STORE_ENABLED, value)
         }
 
+    var isPriorityAlarm: Boolean
+        get() = sharedPreferences.getBoolean(
+            PRIORITY_ALARM,
+            false
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(PRIORITY_ALARM, value)
+        }
+    var getVibrationType: String
+        get() = sharedPreferences.getString(
+            VIBRATION_TYPE,
+            "2"
+        ) ?: "2"
+        set(value) = sharedPreferences.edit {
+            putString(VIBRATION_TYPE, value)
+        }
+
     val materialYou
         get() = sharedPreferences.getBoolean(MATERIAL_YOU, VersionUtils.hasS())
+
+    var isAutoStartBreak: Boolean
+        get() = sharedPreferences.getBoolean(
+            AUTO_START_BREAK,
+            false
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(AUTO_START_BREAK, value)
+        }
+
+    var isAutoStartWork: Boolean
+        get() = sharedPreferences.getBoolean(
+            AUTO_START_WORK,
+            false
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(AUTO_START_WORK, value)
+        }
+    var isWiFiDisabled: Boolean
+        get() = sharedPreferences.getBoolean(
+            DISABLE_WIFI,
+            false
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(DISABLE_WIFI, value)
+        }
+    var isSoundAndVibrationDisabled: Boolean
+        get() = sharedPreferences.getBoolean(
+            DISABLE_SOUND_AND_VIBRATION,
+            false
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(DISABLE_SOUND_AND_VIBRATION, value)
+        }
+    var isDndModeActive: Boolean
+        get() = sharedPreferences.getBoolean(
+            DND_MODE,
+            false
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(DND_MODE, value)
+        }
 
     fun getGeneralThemeValue(isSystemDark: Boolean): ThemeMode {
         val themeMode: String =
@@ -151,5 +232,4 @@ object PreferenceUtil {
             }
         }
     }
-
 }

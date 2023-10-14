@@ -12,7 +12,6 @@ class MainActivity : AbsBaseActivity() {
         setContentView(R.layout.activity_main)
         AppRater.appLaunched(this)
         setupNavigationController()
-
     }
 
     private fun setupNavigationController() {
@@ -21,8 +20,6 @@ class MainActivity : AbsBaseActivity() {
         val navGraph = navInflater.inflate(R.navigation.main_graph)
         navGraph.setStartDestination(R.id.action_timer)
         navController.graph = navGraph
-        // navigationView.setupWithNavController(navController)
-
     }
 
 }

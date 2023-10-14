@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat.recreate
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -21,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ilhomsoliev.pomodoroapp.R
 import com.ilhomsoliev.pomodoroapp.core.Constants
 import com.ilhomsoliev.pomodoroapp.core.PreferenceUtil
+import com.ilhomsoliev.pomodoroapp.core.extentions.printToLog
 import com.ilhomsoliev.pomodoroapp.data.local.Label
 import com.ilhomsoliev.pomodoroapp.data.timer.CurrentSession
 import com.ilhomsoliev.pomodoroapp.data.timer.CurrentSessionManager
@@ -36,23 +38,26 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.koin.core.component.KoinComponent
 import java.util.concurrent.TimeUnit
 
 class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
-    SharedPreferences.OnSharedPreferenceChangeListener, KoinComponent {
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var _binding: TimerBinding? = null
     private val binding get() = _binding!!
 
     private val currentSessionManager by this.getKoin().inject<CurrentSessionManager>()
 
+    private var sessionFinishedDialog: FinishedSessionDialog? = null
+
     private val contextKoin by this.getKoin().inject<Context>()
+
     private var currentSessionType = SessionType.INVALID
+    private val currentSession: CurrentSession
+        get() = currentSessionManager.currentSession
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        EventBus.getDefault().register(this)
         val homeBinding = FragmentTimerBinding.bind(view)
         _binding = TimerBinding(homeBinding)
         if (PreferenceUtil.isFirstRun) {
@@ -61,59 +66,60 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             startActivity(i)
             PreferenceUtil.isFirstRun = false*/
         }
-        setupListeners()
+        setupTimeLabelEvents()
         setupEvents()
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+    }
+
     @Subscribe
     fun onEventMainThread(o: Any?) {
         // TODO
-        /*if (o is Constants.FinishWorkEvent) {
-            if (PreferenceUtil.isAutoStartBreak()) {
+        if (o is Constants.FinishWorkEvent) {
+            (o).printToLog("Hello on Event FinishWorkEvent")
+            /*if (PreferenceUtil.isAutoStartBreak()) {
                 if (PreferenceUtil.isFlashingNotificationEnabled()) {
                     baseViewModel.enableFlashingNotification = true
                 }
             } else {
                 baseViewModel.dialogPendingType = SessionType.WORK
                 showFinishedSessionUI()
-            }
+            }*/
         } else if (o is Constants.FinishBreakEvent || o is Constants.FinishLongBreakEvent) {
-            if (PreferenceUtil.isAutoStartWork()) {
+            (o).printToLog("Hello on Event FinishBreakEvent")
+            /*if (PreferenceUtil.isAutoStartWork()) {
                 if (PreferenceUtil.isFlashingNotificationEnabled()) {
                     baseViewModel.enableFlashingNotification = true
                 }
             } else {
                 baseViewModel.dialogPendingType = SessionType.BREAK
-                showFinishedSessionUI()
-            }
+                 showFinishedSessionUI()
+            }*/
         } else if (o is Constants.StartSessionEvent) {
+            (o).printToLog("Hello on Event StartSessionEvent")
             if (sessionFinishedDialog != null) {
                 sessionFinishedDialog!!.dismissAllowingStateLoss()
             }
             baseViewModel.showFinishDialog = false
-            if (!PreferenceUtil.isAutoStartBreak() && !PreferenceUtil.isAutoStartWork()) {
+            if (!PreferenceUtil.isAutoStartBreak && !PreferenceUtil.isAutoStartWork) {
                 stopFlashingNotification()
             }
         } else if (o is Constants.OneMinuteLeft) {
-            if (PreferenceUtil.isFlashingNotificationEnabled()) {
+            (o).printToLog("Hello on Event OneMinuteLeft")
+            /*if (PreferenceUtil.isFlashingNotificationEnabled()) {
                 startFlashingNotificationShort()
-            }
-        }*/
-    }
-
-    private fun setupListeners() {
-        setupTimeLabelEvents()
-        binding.labelChip.setOnClickListener {
-            //    showEditLabelDialog()
+            }*/
         }
-
-        /*binding.controlButton.setOnClickListener {
-            baseViewModel.toggleTime(60000)
-            binding.controlButton.text = baseViewModel.isTimerRunning.toString()
-        }*/
     }
 
-    private val currentSession: CurrentSession
-        get() = currentSessionManager.currentSession
+    private fun stopFlashingNotification() {
+        binding.whiteCover.visibility = View.GONE
+        binding.whiteCover.clearAnimation()
+        baseViewModel.enableFlashingNotification = false
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupTimeLabelEvents() {
@@ -129,9 +135,9 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
 
             public override fun onSwipeBottom(view: View) {
                 onStopSession()
-                /*if (preferenceHelper.isScreensaverEnabled()) {
-                    recreate()
-                }*/
+                if (true /*preferenceHelper.isScreensaverEnabled()*/) {
+                    activity?.let { recreate(it) }
+                }
             }
 
             public override fun onSwipeTop(view: View) {
@@ -145,6 +151,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             }
 
             public override fun onLongClick(view: View) {
+                // TODO Go to Settings
                 /*val settingsIntent = Intent(this@TimerFragment.activity, SettingsActivity::class.java)
                 startActivity(settingsIntent)*/
             }
@@ -152,7 +159,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             public override fun onPress(view: View) {
                 binding.timeView.startAnimation(
                     AnimationUtils.loadAnimation(
-                        this@TimerFragment.activity?.applicationContext, R.anim.scale_reversed
+                        contextKoin, R.anim.scale_reversed
                     )
                 )
             }
@@ -160,7 +167,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             public override fun onRelease(view: View) {
                 binding.timeView.startAnimation(
                     AnimationUtils.loadAnimation(
-                        this@TimerFragment.activity?.applicationContext, R.anim.scale
+                        contextKoin, R.anim.scale
                     )
                 )
                 if (currentSession.timerState.value === TimerState.PAUSED) {
@@ -168,7 +175,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                         delay(300)
                         binding.timeView.startAnimation(
                             AnimationUtils.loadAnimation(
-                                this@TimerFragment.activity?.applicationContext,
+                                contextKoin,
                                 R.anim.blink
                             )
                         )
@@ -292,12 +299,16 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     private fun setupEvents() {
         currentSession.duration.observe(
             viewLifecycleOwner
-        ) { millis: Long -> updateTimeLabel(millis) }
+        ) { millis: Long ->
+            updateTimeLabel(millis)
+        }
+
         currentSession.sessionType.observe(viewLifecycleOwner) { sessionType: SessionType ->
             currentSessionType = sessionType
             setupLabelView()
             setTimeLabelColor()
         }
+
         currentSession.timerState.observe(viewLifecycleOwner) { timerState: TimerState ->
             when {
                 timerState === TimerState.INACTIVE -> {
@@ -388,7 +399,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         seconds -= minutes * 60
         val currentFormattedTick: String
         val isMinutesStyle =
-            true// TODO preferenceHelper.timerStyle == resources.getString(R.string.pref_timer_style_minutes_value)
+            false// TODO preferenceHelper.timerStyle == resources.getString(R.string.pref_timer_style_minutes_value)
         currentFormattedTick = if (isMinutesStyle) {
             TimeUnit.SECONDS.toMinutes(minutes * 60 + seconds + 59).toString()
         } else {
@@ -463,9 +474,9 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             else -> Log.wtf(TAG, "Invalid timer state.")
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            contextKoin.startForegroundService(startIntent)
+            this@TimerFragment.activity?.startForegroundService(startIntent)
         } else {
-            contextKoin.startService(startIntent)
+            this@TimerFragment.activity?.startService(startIntent)
         }
     }
 
@@ -495,5 +506,11 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     companion object {
         private val TAG = TimerFragment::class.java.simpleName
         private const val DIALOG_SELECT_LABEL_TAG = "dialogSelectLabel"
+
+        @JvmStatic
+        fun newInstance(): TimerFragment {
+            return TimerFragment()
+        }
     }
+
 }

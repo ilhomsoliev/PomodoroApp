@@ -33,6 +33,8 @@ dependencies {
 
     // EventBus
     eventbus()
+    // Gson
+    gson()
 
     customactivityoncrash()
 
