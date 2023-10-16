@@ -16,9 +16,8 @@ import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat.recreate
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 import com.ilhomsoliev.pomodoroapp.R
 import com.ilhomsoliev.pomodoroapp.core.Constants
 import com.ilhomsoliev.pomodoroapp.core.PreferenceUtil
@@ -66,7 +65,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             startActivity(i)
             PreferenceUtil.isFirstRun = false*/
         }
-        setupTimeLabelEvents()
+        setupListeners()
         setupEvents()
     }
 
@@ -122,8 +121,12 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupTimeLabelEvents() {
-
+    private fun setupListeners() {
+        binding.settingsIconButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_settings, null, null, null
+            )
+        }
         binding.timeView.setOnTouchListener(object :
             OnSwipeTouchListener(this@TimerFragment.activity) {
             public override fun onSwipeRight(view: View) {
@@ -370,7 +373,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     private fun setupLabelView() {
         val label = PreferenceUtil.currentSessionLabel
         if (isInvalidLabel(label)) {
-            binding.labelChip.visibility = View.GONE
+            // binding.labelChip.visibility = View.GONE
             // binding.labelButton.isVisible = true
             // val color = ThemeHelper.getColor(this, ThemeHelper.COLOR_INDEX_ALL_LABELS)
             /*binding.labelButton.icon?.setColorFilter(
@@ -432,21 +435,21 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun showAlarmPermissionSnackbar() {
-        val s = Snackbar.make(
-            binding.toolbar,
-            "getString(R.string.settings_grant_permission)",
-            Snackbar.LENGTH_INDEFINITE
-        )
-            .setAction(getString(android.R.string.ok)) {
-                askForAlarmPermission(ContextWrapper(this@TimerFragment.activity?.baseContext))
-            }
-            .setAnchorView(binding.toolbar)
-        s.behavior = object : BaseTransientBottomBar.Behavior() {
-            override fun canSwipeDismissView(child: View): Boolean {
-                return false
-            }
-        }
-        s.show()
+        /*        val s = Snackbar.make(
+                    binding.toolbar,
+                    "getString(R.string.settings_grant_permission)",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setAction(getString(android.R.string.ok)) {
+                        askForAlarmPermission(ContextWrapper(this@TimerFragment.activity?.baseContext))
+                    }
+                    .setAnchorView(binding.toolbar)
+                s.behavior = object : BaseTransientBottomBar.Behavior() {
+                    override fun canSwipeDismissView(child: View): Boolean {
+                        return false
+                    }
+                }
+                s.show()*/
     }
 
     @RequiresApi(Build.VERSION_CODES.S)

@@ -10,4 +10,8 @@
         android:name="com.ilhomsoliev.pomodoroapp.feature.timer.TimerFragment"
         android:label="TimerFragment"
         tools:layout="@layout/fragment_timer"/>
+    <fragment
+        android:id="@+id/action_settings"
+        android:name="com.ilhomsoliev.pomodoroapp.feature.settings.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>
