@@ -50,6 +50,7 @@ const val ENABLE_RINGTONE = "pref_enable_ringtone"
 const val RINGTONE_WORK_FINISHED = "pref_notification_sound_work"
 const val RINGTONE_BREAK_FINISHED = "pref_notification_sound_break"
 
+const val REMINDER_NOTIFICATION_ID = 99
 
 
 

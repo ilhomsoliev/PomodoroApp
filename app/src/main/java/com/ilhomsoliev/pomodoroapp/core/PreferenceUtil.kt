@@ -55,19 +55,19 @@ object PreferenceUtil {
 
 
     var workDuration: Int
-        get() = sharedPreferences.getInt(WORK_DURATION, 25) ?: 25
+        get() = sharedPreferences.getInt(WORK_DURATION, 1) ?: 25
         set(value) = sharedPreferences.edit {
             putInt(WORK_DURATION, value)
         }
 
     var breakDuration: Int
-        get() = sharedPreferences.getInt(BREAK_DURATION, 25) ?: 25
+        get() = sharedPreferences.getInt(BREAK_DURATION, 1) ?: 25
         set(value) = sharedPreferences.edit {
             putInt(BREAK_DURATION, value)
         }
 
     var longDuration: Int
-        get() = sharedPreferences.getInt(BREAK_DURATION, 25) ?: 25
+        get() = sharedPreferences.getInt(BREAK_DURATION, 1) ?: 25
         set(value) = sharedPreferences.edit {
             putInt(LONG_BREAK_DURATION, value)
         }

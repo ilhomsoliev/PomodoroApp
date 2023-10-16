@@ -2,6 +2,7 @@ package com.ilhomsoliev.pomodoroapp.feature.timer
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.ContextWrapper
@@ -23,8 +24,10 @@ import com.ilhomsoliev.pomodoroapp.core.Constants
 import com.ilhomsoliev.pomodoroapp.core.PreferenceUtil
 import com.ilhomsoliev.pomodoroapp.core.extentions.printToLog
 import com.ilhomsoliev.pomodoroapp.data.local.Label
+import com.ilhomsoliev.pomodoroapp.data.reminders.ReminderHelper.Companion.removeNotification
 import com.ilhomsoliev.pomodoroapp.data.timer.CurrentSession
 import com.ilhomsoliev.pomodoroapp.data.timer.CurrentSessionManager
+import com.ilhomsoliev.pomodoroapp.data.timer.NotificationHelper
 import com.ilhomsoliev.pomodoroapp.data.timer.SessionType
 import com.ilhomsoliev.pomodoroapp.data.timer.TimerService
 import com.ilhomsoliev.pomodoroapp.data.timer.TimerState
@@ -79,14 +82,14 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         // TODO
         if (o is Constants.FinishWorkEvent) {
             (o).printToLog("Hello on Event FinishWorkEvent")
-            /*if (PreferenceUtil.isAutoStartBreak()) {
-                if (PreferenceUtil.isFlashingNotificationEnabled()) {
+            if (PreferenceUtil.isAutoStartBreak) {
+                /*if (PreferenceUtil.isFlashingNotificationEnabled()) {
                     baseViewModel.enableFlashingNotification = true
-                }
+                }*/
             } else {
                 baseViewModel.dialogPendingType = SessionType.WORK
-                showFinishedSessionUI()
-            }*/
+                // showFinishedSessionUI()
+            }
         } else if (o is Constants.FinishBreakEvent || o is Constants.FinishLongBreakEvent) {
             (o).printToLog("Hello on Event FinishBreakEvent")
             /*if (PreferenceUtil.isAutoStartWork()) {
@@ -259,24 +262,22 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         super.onPause()
         baseViewModel.isActive = false
     }
-
     override fun onResume() {
         super.onResume()
-        // setupEvents()
-        /* removeNotification(applicationContext)
+        removeNotification(contextKoin)
          baseViewModel.isActive = true
          if (baseViewModel.showFinishDialog) {
-             showFinishedSessionUI()
+             // showFinishedSessionUI()
          }
 
          // initialize notification channels on the first run
          if (PreferenceUtil.isFirstRun) {
-             NotificationHelper(this)
+             NotificationHelper(this@TimerFragment.contextKoin)
          }
 
          // this is to refresh the current status icon color
-         invalidateOptionsMenu()
-         *//*val pref = PreferenceManager.getDefaultSharedPreferences(context)
+         // invalidateOptionsMenu()
+         /*val pref = PreferenceManager.getDefaultSharedPreferences(context)
         pref.registerOnSharedPreferenceChangeListener(context)*//*
         PreferenceUtil.registerOnSharedPreferenceChangedListener(this@TimerFragment)
 

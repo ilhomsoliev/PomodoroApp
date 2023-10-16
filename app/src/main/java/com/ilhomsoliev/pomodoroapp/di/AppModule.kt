@@ -1,6 +1,8 @@
 package com.ilhomsoliev.pomodoroapp.di
 
 import com.ilhomsoliev.pomodoroapp.core.PreferenceUtil
+import com.ilhomsoliev.pomodoroapp.data.reminders.BootReceiver
+import com.ilhomsoliev.pomodoroapp.data.reminders.ReminderHelper
 import com.ilhomsoliev.pomodoroapp.data.timer.CurrentSessionManager
 import com.ilhomsoliev.pomodoroapp.data.timer.NotificationHelper
 import com.ilhomsoliev.pomodoroapp.data.timer.RingtoneAndVibrationPlayer
@@ -20,6 +22,9 @@ private val dataModule = module {
     single { PreferenceUtil }
     single { NotificationHelper(get()) }
     single { RingtoneAndVibrationPlayer(get(), get()) }
+    single { ReminderHelper(get()) }
+    single { BootReceiver() }
+
 }
 
 private val mainModule = module {
