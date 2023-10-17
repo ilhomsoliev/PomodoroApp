@@ -6,4 +6,7 @@ class SettingsBinding(
     binding: FragmentSettingsBinding
 ) {
 
+    val toolbar = binding.appBarLayout.toolbar
+
+
 }

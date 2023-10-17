@@ -1,4 +1,4 @@
-package com.ilhomsoliev.pomodoroapp.shared.base
+package com.ilhomsoliev.pomodoroapp.shared.base_activity
 
 import android.content.Context
 import android.os.Bundle

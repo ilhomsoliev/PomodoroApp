@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.ilhomsoliev.pomodoroapp.shared.base
+package com.ilhomsoliev.pomodoroapp.shared.base_activity
 
 import android.Manifest
 import android.content.Intent

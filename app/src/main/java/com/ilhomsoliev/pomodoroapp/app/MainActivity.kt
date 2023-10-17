@@ -2,7 +2,7 @@ package com.ilhomsoliev.pomodoroapp.app
 
 import android.os.Bundle
 import com.ilhomsoliev.pomodoroapp.R
-import com.ilhomsoliev.pomodoroapp.shared.base.AbsBaseActivity
+import com.ilhomsoliev.pomodoroapp.shared.base_activity.AbsBaseActivity
 import com.ilhomsoliev.pomodoroapp.core.extentions.findNavController
 import com.ilhomsoliev.pomodoroapp.core.util.AppRater
 
