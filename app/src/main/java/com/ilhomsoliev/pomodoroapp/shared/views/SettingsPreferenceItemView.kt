@@ -8,6 +8,6 @@ import com.ilhomsoliev.pomodoroapp.databinding.SettingsPreferenceItemViewBinding
 class SettingsPreferenceItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet?) :
     View(context, attrs) {
 
-    //  private val binding: SettingsPreferenceItemViewBinding
+    //  private val binding: SettingsPreferenceItemViewBinding asd
 
 }
