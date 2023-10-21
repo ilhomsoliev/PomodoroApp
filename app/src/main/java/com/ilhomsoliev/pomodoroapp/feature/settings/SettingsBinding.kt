@@ -7,6 +7,7 @@ class SettingsBinding(
 ) {
 
     val toolbar = binding.appBarLayout.toolbar
-
+    val timerDurationPref = binding.timerDurationPref.binding
 
 }
+

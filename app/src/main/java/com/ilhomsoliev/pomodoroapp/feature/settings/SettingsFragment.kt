@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.text.parseAsHtml
 import androidx.navigation.fragment.findNavController
 import com.ilhomsoliev.pomodoroapp.R
@@ -35,6 +36,10 @@ class SettingsFragment : AbsMainActivityFragment(R.layout.fragment_settings),
         }
         val appName = "Settings"
         binding.toolbar.title = appName
+        binding.timerDurationPref.root.setOnClickListener {
+            Toast.makeText(this@SettingsFragment.contextKoin, "Hey", Toast.LENGTH_LONG).show()
+        }
+
     }
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 

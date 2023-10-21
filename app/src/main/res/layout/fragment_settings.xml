@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/md_grey_700"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,5 +14,65 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <com.ilhomsoliev.pomodoroapp.feature.settings.views.SettingsPreferenceItemView
+            android:id="@+id/timerDurationPref"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefDescription="Set the duration for work and break session"
+            app:prefIcon="@drawable/time_icon"
+            app:prefTitle="Timer duration" />
+
+        <com.ilhomsoliev.pomodoroapp.feature.settings.views.SettingsPreferenceItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefDescription=""
+            app:prefHasToggle="true"
+            app:prefIcon="@drawable/theme_icon"
+            app:prefTitle="Dark Theme" />
+
+        <com.ilhomsoliev.pomodoroapp.feature.settings.views.SettingsPreferenceItemView
+            android:id="@+id/notificationSoundPref"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefDescription=""
+            app:prefHasToggle="true"
+            app:prefIcon="@drawable/notification_icon"
+            app:prefTitle="Notification sound" />
+
+        <com.ilhomsoliev.pomodoroapp.feature.settings.views.SettingsPreferenceItemView
+            android:id="@+id/vibrationSoundPref"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefDescription="Strong"
+            app:prefIcon="@drawable/vibrate_icon"
+            app:prefTitle="Vibration" />
+
+        <com.ilhomsoliev.pomodoroapp.feature.settings.views.SettingsPreferenceItemView
+            android:id="@+id/languagePref"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefDescription="English"
+            app:prefIcon="@drawable/languages_icon"
+            app:prefTitle="Language" />
+
+        <com.ilhomsoliev.pomodoroapp.feature.settings.views.SettingsPreferenceItemView
+            android:id="@+id/developersPref"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefDescription=""
+            app:prefIcon="@drawable/developers_icon"
+            app:prefTitle="Developers" />
+
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

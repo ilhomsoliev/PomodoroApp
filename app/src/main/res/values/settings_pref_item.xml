@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SettingsPrefItem">
+        <attr name="prefTitle" format="string" localization="suggested" />
+        <attr name="prefDescription" format="string" localization="suggested" />
+        <attr name="prefIcon" format="reference" />
+        <attr name="prefHasToggle" format="boolean" />
+    </declare-styleable>
+</resources>
