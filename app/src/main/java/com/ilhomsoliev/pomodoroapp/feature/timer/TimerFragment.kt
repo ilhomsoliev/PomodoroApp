@@ -2,7 +2,6 @@ package com.ilhomsoliev.pomodoroapp.feature.timer
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.ContextWrapper
@@ -13,9 +12,28 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat.recreate
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
@@ -32,9 +50,13 @@ import com.ilhomsoliev.pomodoroapp.data.timer.SessionType
 import com.ilhomsoliev.pomodoroapp.data.timer.TimerService
 import com.ilhomsoliev.pomodoroapp.data.timer.TimerState
 import com.ilhomsoliev.pomodoroapp.databinding.FragmentTimerBinding
+import com.ilhomsoliev.pomodoroapp.feature.timer.compose.AnimatedTimer
+import com.ilhomsoliev.pomodoroapp.feature.timer.compose.ControlButton
+import com.ilhomsoliev.pomodoroapp.feature.timer.compose.StartButton
 import com.ilhomsoliev.pomodoroapp.shared.base_fragment.AbsMainActivityFragment
+import com.ilhomsoliev.pomodoroapp.shared.icons.Pause
+import com.ilhomsoliev.pomodoroapp.shared.icons.Square
 import com.ilhomsoliev.pomodoroapp.shared.util.IntentWithAction
-import com.ilhomsoliev.pomodoroapp.shared.util.OnSwipeTouchListener
 import com.ilhomsoliev.pomodoroapp.shared.util.ThemeHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -68,9 +90,104 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             startActivity(i)
             PreferenceUtil.isFirstRun = false*/
         }
+        val overalltime = PreferenceUtil.getSessionDuration(SessionType.WORK)
+        overalltime.printToLog("Work")
+        binding.composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme {
+                    val duration by currentSession.duration.observeAsState()
+                    val timerState by currentSession.timerState.observeAsState()
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        ) {
+                            IconButton(onClick = {
+                                findNavController().navigate(
+                                    R.id.action_settings, null, null, null
+                                )
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
+
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(2.5f)
+                        ) {
+                            AnimatedTimer(
+                                modifier = Modifier
+                                    .align(Alignment.TopCenter)
+                                    .clickable(
+                                        MutableInteractionSource(), indication = null, onClick = {
+                                            onStartButtonClick()
+                                        }
+                                    ),
+                                timeOverall = overalltime.toInt() * 60,
+                                currentTime = duration?.toInt()?.div(1000) ?: 0,
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1.5f)
+                        ) {
+                            AnimatedContent(targetState = timerState, label = "") {
+                                when (it) {
+                                    TimerState.INACTIVE -> {
+                                        StartButton(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .align(Alignment.TopCenter)
+                                        ) {
+                                            onStartButtonClick()
+                                        }
+
+                                    }
+
+                                    TimerState.ACTIVE -> {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceAround,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            ControlButton(Pause, "Pause") {
+
+                                            }
+                                            ControlButton(Square, "Quit") {
+
+                                            }
+                                        }
+
+                                    }
+
+                                    TimerState.PAUSED -> {}
+
+                                    else -> {}
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         setupListeners()
         setupEvents()
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,19 +235,14 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     }
 
     private fun stopFlashingNotification() {
-        binding.whiteCover.visibility = View.GONE
-        binding.whiteCover.clearAnimation()
+        /*binding.whiteCover.visibility = View.GONE
+        binding.whiteCover.clearAnimation()*/
         baseViewModel.enableFlashingNotification = false
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
-        binding.settingsIconButton.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_settings, null, null, null
-            )
-        }
-        binding.timeView.setOnTouchListener(object :
+        /*binding.timeView.setOnTouchListener(object :
             OnSwipeTouchListener(this@TimerFragment.activity) {
             public override fun onSwipeRight(view: View) {
                 onSkipSession()
@@ -142,7 +254,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
 
             public override fun onSwipeBottom(view: View) {
                 onStopSession()
-                if (true /*preferenceHelper.isScreensaverEnabled()*/) {
+                if (true *//*preferenceHelper.isScreensaverEnabled()*//*) {
                     activity?.let { recreate(it) }
                 }
             }
@@ -159,8 +271,8 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
 
             public override fun onLongClick(view: View) {
                 // TODO Go to Settings
-                /*val settingsIntent = Intent(this@TimerFragment.activity, SettingsActivity::class.java)
-                startActivity(settingsIntent)*/
+                *//*val settingsIntent = Intent(this@TimerFragment.activity, SettingsActivity::class.java)
+                startActivity(settingsIntent)*//*
             }
 
             public override fun onPress(view: View) {
@@ -189,10 +301,10 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                     }
                 }
             }
-        })
+        })*/
     }
 
-    fun onStartButtonClick(view: View) {
+    fun onStartButtonClick() {
         start(SessionType.WORK)
     }
 
@@ -262,23 +374,24 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         super.onPause()
         baseViewModel.isActive = false
     }
+
     override fun onResume() {
         super.onResume()
         removeNotification(contextKoin)
-         baseViewModel.isActive = true
-         if (baseViewModel.showFinishDialog) {
-             // showFinishedSessionUI()
-         }
+        baseViewModel.isActive = true
+        if (baseViewModel.showFinishDialog) {
+            // showFinishedSessionUI()
+        }
 
-         // initialize notification channels on the first run
-         if (PreferenceUtil.isFirstRun) {
-             NotificationHelper(this@TimerFragment.contextKoin)
-         }
+        // initialize notification channels on the first run
+        if (PreferenceUtil.isFirstRun) {
+            NotificationHelper(this@TimerFragment.contextKoin)
+        }
 
-         // this is to refresh the current status icon color
-         // invalidateOptionsMenu()
-         /*val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        pref.registerOnSharedPreferenceChangeListener(context)*//*
+        // this is to refresh the current status icon color
+        // invalidateOptionsMenu()
+        /*val pref = PreferenceManager.getDefaultSharedPreferences(context)
+       pref.registerOnSharedPreferenceChangeListener(context)*//*
         PreferenceUtil.registerOnSharedPreferenceChangedListener(this@TimerFragment)
 
         toggleKeepScreenOn(preferenceHelper.isScreenOnEnabled())
@@ -310,7 +423,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
 
         currentSession.sessionType.observe(viewLifecycleOwner) { sessionType: SessionType ->
             currentSessionType = sessionType
-            setupLabelView()
+            // setupLabelView()
             setTimeLabelColor()
         }
 
@@ -321,23 +434,21 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                     setTimeLabelColor()
                     lifecycleScope.launch {
                         delay(300)
-                        binding.timeView.clearAnimation()
+                        // binding.timeView.clearAnimation()
                     }
                 }
 
                 timerState === TimerState.PAUSED -> {
                     lifecycleScope.launch {
                         delay(300)
-                        binding.timeView.startAnimation(
-                            AnimationUtils.loadAnimation(contextKoin, R.anim.blink)
-                        )
+                        // binding.timeView.startAnimation(AnimationUtils.loadAnimation(contextKoin, R.anim.blink))
                     }
                 }
 
                 else -> {
                     lifecycleScope.launch {
                         delay(300)
-                        binding.timeView.clearAnimation()
+                        // binding.timeView.clearAnimation()
                     }
                 }
             }
@@ -351,23 +462,23 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     private fun setTimeLabelColor() {
         val label = PreferenceUtil.currentSessionLabel
         if (currentSessionType === SessionType.BREAK || currentSessionType === SessionType.LONG_BREAK) {
-            binding.timeView.setTextColor(
+            /*binding.timeView.setTextColor(
                 ThemeHelper.getColor(
                     contextKoin,
                     ThemeHelper.COLOR_INDEX_BREAK
                 )
-            )
+            )*/
             return
         }
         if (!isInvalidLabel(label)) {
-            binding.timeView.setTextColor(ThemeHelper.getColor(contextKoin, label.colorId))
+            // binding.timeView.setTextColor(ThemeHelper.getColor(contextKoin, label.colorId))
         } else {
-            binding.timeView.setTextColor(
+            /*binding.timeView.setTextColor(
                 ThemeHelper.getColor(
                     contextKoin,
                     ThemeHelper.COLOR_INDEX_UNLABELED
                 )
-            )
+            )*/
         }
     }
 
@@ -412,7 +523,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                 .toString() + ":"
                     + if (seconds > 9) seconds else "0$seconds")
         }
-        binding.timeView.text = currentFormattedTick
+        // binding.timeView.text = currentFormattedTick
         Log.v(TAG, "drawing the time label.")
         // TODO
         /*if (preferenceHelper.isScreensaverEnabled() && seconds == 1L && currentSession.timerState.value !== TimerState.PAUSED) {
@@ -493,8 +604,8 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         } else {
             contextKoin.startService(stopIntent)
         }
-        binding.whiteCover.visibility = View.GONE
-        binding.whiteCover.clearAnimation()
+        /*binding.whiteCover.visibility = View.GONE
+        binding.whiteCover.clearAnimation()*/
     }
 
     override fun onDestroy() {

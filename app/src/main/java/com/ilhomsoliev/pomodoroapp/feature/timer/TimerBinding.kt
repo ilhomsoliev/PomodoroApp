@@ -6,11 +6,12 @@ class TimerBinding(
     binding: FragmentTimerBinding
 ) {
     val root = binding.root
-    val timerText = binding.timeLabel
+    val composeView = binding.composeView
+/*    val timerText = binding.timeLabel
     val blackCover = binding.blackCover
     val whiteCover = binding.whiteCover
     val timeView = binding.timeLabel
     val tutorialDot = binding.tutorialDot
     val boundsView = binding.main
-    val settingsIconButton = binding.settingsIconButton
+    val settingsIconButton = binding.settingsIconButton*/
 }

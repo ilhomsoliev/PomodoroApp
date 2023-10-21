@@ -21,15 +21,17 @@ android {
         viewBinding = true
     }
 }
+compose(true)
 
 dependencies {
     implementation(project(mapOf("path" to ":appthemehelper")))
     implementation("androidx.lifecycle:lifecycle-service:2.6.2")
-    androidBase(false)
+    androidBase(true)
     xmlNavigation()
     lifecycle()
     material_dialog()
     androidX()
+    compose()
 
     // EventBus
     eventbus()

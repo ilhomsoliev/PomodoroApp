@@ -32,6 +32,7 @@
             app:prefTitle="Timer duration" />
 
         <com.ilhomsoliev.pomodoroapp.feature.settings.views.SettingsPreferenceItemView
+            android:id="@+id/themePref"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefDescription=""
