@@ -23,10 +23,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,7 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.lifecycle.lifecycleScope
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.ilhomsoliev.pomodoroapp.R
@@ -57,9 +63,6 @@ import com.ilhomsoliev.pomodoroapp.shared.base_fragment.AbsMainActivityFragment
 import com.ilhomsoliev.pomodoroapp.shared.icons.Pause
 import com.ilhomsoliev.pomodoroapp.shared.icons.Square
 import com.ilhomsoliev.pomodoroapp.shared.util.IntentWithAction
-import com.ilhomsoliev.pomodoroapp.shared.util.ThemeHelper
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.util.concurrent.TimeUnit
@@ -75,6 +78,8 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     private var sessionFinishedDialog: FinishedSessionDialog? = null
 
     private val contextKoin by this.getKoin().inject<Context>()
+
+    private val contextFragment = this.context
 
     private var currentSessionType = SessionType.INVALID
     private val currentSession: CurrentSession
@@ -104,22 +109,40 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                             .fillMaxSize()
                             .background(Color.White)
                     ) {
-                        Row(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f)
                         ) {
-                            IconButton(onClick = {
-                                findNavController().navigate(
-                                    R.id.action_settings, null, null, null
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "TimerClick",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        lineHeight = 16.sp,
+                                        // fontFamily = FontFamily(Font(R.font.dm sans)),
+                                        fontWeight = FontWeight(700),
+                                        color = Color(0xD1000000),
+                                        textAlign = TextAlign.Center,
+                                    )
                                 )
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = null
-                                )
+                                IconButton(onClick = {
+                                    findNavController().navigate(
+                                        R.id.action_settings, null, null, null
+                                    )
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = null
+                                    )
+                                }
                             }
-
+                            Divider()
                         }
                         Box(
                             modifier = Modifier
@@ -136,6 +159,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                                     ),
                                 timeOverall = overalltime.toInt() * 60,
                                 currentTime = duration?.toInt()?.div(1000) ?: 0,
+                                isInactive = timerState == TimerState.INACTIVE,
                             )
                         }
                         Box(
@@ -156,27 +180,24 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
 
                                     }
 
-                                    TimerState.ACTIVE -> {
+                                    else -> {
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.SpaceAround,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            ControlButton(Pause, "Pause") {
-
+                                            ControlButton(
+                                                if (TimerState.ACTIVE == it) Pause else Icons.Default.PlayArrow,
+                                                "Pause"
+                                            ) {
+                                                onStartButtonClick()
                                             }
                                             ControlButton(Square, "Quit") {
-
+                                                onSkipButtonClick()
                                             }
                                         }
-
                                     }
-
-                                    TimerState.PAUSED -> {}
-
-                                    else -> {}
                                 }
-
                             }
                         }
                     }
@@ -325,11 +346,11 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         }
     }
 
-    fun onStopButtonClick() {
+    private fun onStopButtonClick() {
         stop()
     }
 
-    fun onSkipButtonClick() {
+    private fun onSkipButtonClick() {
         skip()
     }
 
@@ -424,10 +445,10 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         currentSession.sessionType.observe(viewLifecycleOwner) { sessionType: SessionType ->
             currentSessionType = sessionType
             // setupLabelView()
-            setTimeLabelColor()
+            // setTimeLabelColor()
         }
 
-        currentSession.timerState.observe(viewLifecycleOwner) { timerState: TimerState ->
+        /*currentSession.timerState.observe(viewLifecycleOwner) { timerState: TimerState ->
             when {
                 timerState === TimerState.INACTIVE -> {
                     setupLabelView()
@@ -452,61 +473,11 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                     }
                 }
             }
-        }
+        }*/
     }
 
     private fun isInvalidLabel(label: Label): Boolean {
         return label.title == "" || label.title == getString(R.string.label_unlabeled)
-    }
-
-    private fun setTimeLabelColor() {
-        val label = PreferenceUtil.currentSessionLabel
-        if (currentSessionType === SessionType.BREAK || currentSessionType === SessionType.LONG_BREAK) {
-            /*binding.timeView.setTextColor(
-                ThemeHelper.getColor(
-                    contextKoin,
-                    ThemeHelper.COLOR_INDEX_BREAK
-                )
-            )*/
-            return
-        }
-        if (!isInvalidLabel(label)) {
-            // binding.timeView.setTextColor(ThemeHelper.getColor(contextKoin, label.colorId))
-        } else {
-            /*binding.timeView.setTextColor(
-                ThemeHelper.getColor(
-                    contextKoin,
-                    ThemeHelper.COLOR_INDEX_UNLABELED
-                )
-            )*/
-        }
-    }
-
-    private fun setupLabelView() {
-        val label = PreferenceUtil.currentSessionLabel
-        if (isInvalidLabel(label)) {
-            // binding.labelChip.visibility = View.GONE
-            // binding.labelButton.isVisible = true
-            // val color = ThemeHelper.getColor(this, ThemeHelper.COLOR_INDEX_ALL_LABELS)
-            /*binding.labelButton.icon?.setColorFilter(
-                color, PorterDuff.Mode.SRC_ATOP
-            )*/
-        } else {
-            val color = ThemeHelper.getColor(contextKoin, label.colorId)
-            // TODO
-            /*if (PreferenceUtil.showCurrentLabel()) {
-                // binding.labelButton.isVisible = false
-                binding.labelChip.visibility = View.VISIBLE
-                binding.labelChip.text = label.title
-                binding.labelChip.chipBackgroundColor = ColorStateList.valueOf(color)
-            } else {
-                labelChip.visibility = View.GONE
-                labelButton.isVisible = true
-                labelButton.icon?.setColorFilter(
-                    color, PorterDuff.Mode.SRC_ATOP
-                )
-            }*/
-        }
     }
 
     private fun updateTimeLabel(millis: Long) {
@@ -604,8 +575,6 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         } else {
             contextKoin.startService(stopIntent)
         }
-        /*binding.whiteCover.visibility = View.GONE
-        binding.whiteCover.clearAnimation()*/
     }
 
     override fun onDestroy() {

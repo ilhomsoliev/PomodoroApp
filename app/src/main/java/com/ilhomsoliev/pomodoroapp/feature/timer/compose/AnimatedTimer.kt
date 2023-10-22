@@ -25,6 +25,7 @@ fun AnimatedTimer(
     modifier: Modifier = Modifier,
     timeOverall: Int,
     currentTime: Int,
+    isInactive: Boolean,
 ) {
     val strokeWidth = 24.dp;
     val progress by animateFloatAsState(
@@ -57,7 +58,8 @@ fun AnimatedTimer(
 
         // Timer Text
         Text(
-            text = getTimeDisplayed(currentTime), style = TextStyle(
+            text = if (isInactive) "Click\nstart" else getTimeDisplayed(currentTime),
+            style = TextStyle(
                 fontSize = 38.sp,
                 lineHeight = 38.sp,
                 // fontFamily = FontFamily(Font(R.font.dm sans)),
