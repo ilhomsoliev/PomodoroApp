@@ -13,34 +13,16 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.ilhomsoliev.pomodoroapp.R
@@ -56,12 +38,10 @@ import com.ilhomsoliev.pomodoroapp.data.timer.SessionType
 import com.ilhomsoliev.pomodoroapp.data.timer.TimerService
 import com.ilhomsoliev.pomodoroapp.data.timer.TimerState
 import com.ilhomsoliev.pomodoroapp.databinding.FragmentTimerBinding
-import com.ilhomsoliev.pomodoroapp.feature.timer.compose.AnimatedTimer
-import com.ilhomsoliev.pomodoroapp.feature.timer.compose.ControlButton
-import com.ilhomsoliev.pomodoroapp.feature.timer.compose.StartButton
+import com.ilhomsoliev.pomodoroapp.feature.timer.components.ButtonTimerMain
+import com.ilhomsoliev.pomodoroapp.feature.timer.components.TimerMain
+import com.ilhomsoliev.pomodoroapp.feature.timer.components.TopBarMain
 import com.ilhomsoliev.pomodoroapp.shared.base_fragment.AbsMainActivityFragment
-import com.ilhomsoliev.pomodoroapp.shared.icons.Pause
-import com.ilhomsoliev.pomodoroapp.shared.icons.Square
 import com.ilhomsoliev.pomodoroapp.shared.util.IntentWithAction
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -96,110 +76,51 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             PreferenceUtil.isFirstRun = false*/
         }
         val overalltime = PreferenceUtil.getSessionDuration(SessionType.WORK)
-        overalltime.printToLog("Work")
+
         binding.composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
                     val duration by currentSession.duration.observeAsState()
                     val timerState by currentSession.timerState.observeAsState()
+                    val sessionType by currentSession.sessionType.observeAsState()
 
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Color.White)
                     ) {
-                        Column(
+                        TopBarMain(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f)
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "TimerClick",
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        lineHeight = 16.sp,
-                                        // fontFamily = FontFamily(Font(R.font.dm sans)),
-                                        fontWeight = FontWeight(700),
-                                        color = Color(0xD1000000),
-                                        textAlign = TextAlign.Center,
-                                    )
-                                )
-                                IconButton(onClick = {
-                                    findNavController().navigate(
-                                        R.id.action_settings, null, null, null
-                                    )
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Settings,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                            Divider()
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(2.5f)
-                        ) {
-                            AnimatedTimer(
-                                modifier = Modifier
-                                    .align(Alignment.TopCenter)
-                                    .clickable(
-                                        MutableInteractionSource(), indication = null, onClick = {
-                                            onStartButtonClick()
-                                        }
-                                    ),
-                                timeOverall = overalltime.toInt() * 60,
-                                currentTime = duration?.toInt()?.div(1000) ?: 0,
-                                isInactive = timerState == TimerState.INACTIVE,
+                            findNavController().navigate(
+                                R.id.action_settings, null, null, null
                             )
                         }
-                        Box(
+
+                        TimerMain(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1.5f)
-                        ) {
-                            AnimatedContent(targetState = timerState, label = "") {
-                                when (it) {
-                                    TimerState.INACTIVE -> {
-                                        StartButton(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .align(Alignment.TopCenter)
-                                        ) {
-                                            onStartButtonClick()
-                                        }
+                                .weight(2.5f),
+                            onClick = { onStartButtonClick() },
+                            overalltime = overalltime.toInt() * 60,
+                            duration = duration?.toInt()?.div(1000) ?: 0,
+                            isInActive = timerState == TimerState.INACTIVE,
+                            sessionType = sessionType,
 
-                                    }
+                            )
 
-                                    else -> {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceAround,
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            ControlButton(
-                                                if (TimerState.ACTIVE == it) Pause else Icons.Default.PlayArrow,
-                                                "Pause"
-                                            ) {
-                                                onStartButtonClick()
-                                            }
-                                            ControlButton(Square, "Quit") {
-                                                onSkipButtonClick()
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        ButtonTimerMain(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1.5f),
+                            timerState = timerState,
+                            onSkipButtonClick = { onSkipButtonClick() },
+                            onStartButtonClick = { onStartButtonClick() },
+
+                            )
                     }
                 }
             }

@@ -21,7 +21,7 @@ import kotlin.math.min
  * The duration is updated using an [AppCountDownTimer]. Events coming from other layers will
  * trigger an update of the [CurrentSession]'s [TimerState] and [SessionType].
  */
-class CurrentSessionManager(val context: Context, val preferenceHelper: PreferenceUtil) :
+class CurrentSessionManager(val context: Context, private val preferenceHelper: PreferenceUtil) :
     ContextWrapper(context) {
 
     var currentSession = CurrentSession(

@@ -3,7 +3,7 @@ package com.ilhomsoliev.pomodoroapp.feature.timer.compose
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ilhomsoliev.pomodoroapp.data.timer.SessionType
 
 
 @Composable
@@ -26,6 +27,7 @@ fun AnimatedTimer(
     timeOverall: Int,
     currentTime: Int,
     isInactive: Boolean,
+    sessionType: SessionType?,
 ) {
     val strokeWidth = 24.dp;
     val progress by animateFloatAsState(
@@ -33,11 +35,11 @@ fun AnimatedTimer(
     )
 
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         // Background Circle
-        Canvas(modifier = Modifier.size(200.dp)) {
+        Canvas(modifier = Modifier.size(220.dp)) {
             drawCircle(
                 color = Color(0xFFF5EEFF),
                 style = Stroke(width = strokeWidth.toPx())
@@ -45,7 +47,7 @@ fun AnimatedTimer(
         }
 
         // Animated Progress Circle
-        Canvas(modifier = Modifier.size(200.dp)) {
+        Canvas(modifier = Modifier.size(220.dp)) {
             drawArc(
                 color = Color(0xFF6200EE), // #FFFFFF, #6200EE
                 startAngle = -90f, // Start at the top
