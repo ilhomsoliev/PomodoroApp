@@ -80,7 +80,9 @@ class CurrentSessionManager(val context: Context, private val preferenceHelper: 
 
             else -> Log.wtf(TAG, "The timer is in an invalid state.")
         }
+
     }
+
 
     fun stopTimer() {
         cancelAlarm()
