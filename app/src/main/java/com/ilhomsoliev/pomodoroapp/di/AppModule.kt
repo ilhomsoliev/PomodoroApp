@@ -8,12 +8,14 @@ import com.ilhomsoliev.pomodoroapp.data.timer.NotificationHelper
 import com.ilhomsoliev.pomodoroapp.data.timer.RingtoneAndVibrationPlayer
 import com.ilhomsoliev.pomodoroapp.data.timer.TimerService
 import com.ilhomsoliev.pomodoroapp.feature.BaseViewModel
+import com.ilhomsoliev.pomodoroapp.feature.settings.compose.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 private val viewModules = module {
     viewModel { BaseViewModel() }
+    viewModel { SettingsViewModel() }
 }
 
 private val dataModule = module {
