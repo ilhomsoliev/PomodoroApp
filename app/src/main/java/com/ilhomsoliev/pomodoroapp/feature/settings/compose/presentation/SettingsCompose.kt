@@ -1,21 +1,18 @@
 package com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.SettingsPrefItem
 import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.SettingsTopBar
-import com.ilhomsoliev.pomodoroapp.shared.icons.DevelopersIcon
-import com.ilhomsoliev.pomodoroapp.shared.icons.LanguagesIcon
-import com.ilhomsoliev.pomodoroapp.shared.icons.NotificationIcon
-import com.ilhomsoliev.pomodoroapp.shared.icons.ThemeIcon
-import com.ilhomsoliev.pomodoroapp.shared.icons.TimeIcon
-import com.ilhomsoliev.pomodoroapp.shared.icons.VibrateIcon
+import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.main_settings.MainSettingsScreen
+import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.time_duration_screen.TimeDurationScreen
 
 data class SettingsState(
     val isDarkTheme: Boolean,
+    val isOnTimerDurationScreen: Boolean,
+    val isLongBreakToggleActive: Boolean,
 )
 
 interface SettingsCallback {
@@ -29,6 +26,7 @@ interface SettingsCallback {
     fun onBackgroundClick()
     fun onDisableSoundAndVibrationClick()
     fun onDoNotDisturbClick()
+    fun onEnableLongBreaksClick(value: Boolean)
 }
 
 @Composable
@@ -40,60 +38,12 @@ fun SettingsContent(
         SettingsTopBar {
             callback.onBack()
         }
-        LazyColumn(content = {
-            item(key = 1) {
-                SettingsPrefItem(
-                    icon = TimeIcon,
-                    title = "Timer duration",
-                    description = "Set the duration for work and break session",
-                )
+        AnimatedContent(targetState = state.isOnTimerDurationScreen, label = "") {
+            if (it) {
+                TimeDurationScreen(state = state, callback = callback)
+            } else {
+                MainSettingsScreen(state = state, callback = callback)
             }
-            item(key = 2) {
-                SettingsPrefItem(
-                    icon = ThemeIcon,
-                    title = "Dark theme",
-                    isToggleActive = false,
-                    onToggleClick = {}
-                )
-            }
-            item(key = 3) {
-                SettingsPrefItem(
-                    icon = NotificationIcon,
-                    title = "Notification sound",
-                    isToggleActive = false,
-                    onToggleClick = {}
-                )
-            }
-            item(key = 4) {
-                SettingsPrefItem(
-                    icon = VibrateIcon,
-                    title = "Vibration",
-                    description = "Strong",
-                )
-            }
-            item(key = 6) {
-                SettingsPrefItem(
-                    icon = LanguagesIcon,
-                    title = "Language",
-                    description = "English",
-                )
-            }
-            item(key = 7) {
-                SettingsPrefItem(
-                    icon = DevelopersIcon,
-                    title = "Developers",
-                )
-            }
-            /*item(key = 8) {
-                SettingsPrefItem(
-                    icon = Backgr,
-                    title = "Background",
-                )
-            }*/
-            item(key = 8) {
-
-            }
-        })
+        }
     }
-
 }

@@ -2,6 +2,8 @@ package com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.ilhomsoliev.pomodoroapp.feature.settings.compose.viewmodel.SettingsViewModel
 
 @Composable
@@ -10,15 +12,26 @@ fun SettingsScreen(
     onBack: () -> Unit,
 ) {
     val isSystemDark = isSystemInDarkTheme()
+    val isOnTimerDurationScreen by vm.isOnTimerDurationScreen.collectAsState()
+    val isLongBreakToggleActive by vm.isLongBreakToggleActive.collectAsState()
+
     SettingsContent(
-        SettingsState(isSystemDark),
+        SettingsState(
+            isDarkTheme = isSystemDark,
+            isOnTimerDurationScreen = isOnTimerDurationScreen,
+            isLongBreakToggleActive = isLongBreakToggleActive,
+        ),
         object : SettingsCallback {
             override fun onBack() {
-                onBack()
+                if (isOnTimerDurationScreen) {
+                    vm.onIsOnTimerDurationScreenChange()
+                } else {
+                    onBack()
+                }
             }
 
             override fun onTimerDurationClick() {
-                TODO("Not yet implemented")
+                vm.onIsOnTimerDurationScreenChange()
             }
 
             override fun onThemeToggleClick() {
@@ -51,6 +64,10 @@ fun SettingsScreen(
 
             override fun onDoNotDisturbClick() {
                 TODO("Not yet implemented")
+            }
+
+            override fun onEnableLongBreaksClick(value: Boolean) {
+                vm.onIsLongBreakToggleActiveChange()
             }
 
         }

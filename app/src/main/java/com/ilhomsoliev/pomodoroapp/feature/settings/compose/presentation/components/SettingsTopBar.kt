@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -22,21 +23,21 @@ import com.ilhomsoliev.pomodoroapp.R
 fun SettingsTopBar(
     onBack: () -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        IconButton(onClick = { /*TODO*/ }) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        IconButton(onClick = { onBack() }) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
-            Text(
-                text = "Settings",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.dm_sans)),
-                    fontWeight = FontWeight(700),
-                    color = Color(0xD1000000),
-                    textAlign = TextAlign.Center,
-                )
-            )
         }
+        Text(
+            text = "Settings",
+            style = TextStyle(
+                fontSize = 16.sp,
+                lineHeight = 16.sp,
+                fontFamily = FontFamily(Font(R.font.dm_sans)),
+                fontWeight = FontWeight(700),
+                color = Color(0xD1000000),
+                textAlign = TextAlign.Center,
+            )
+        )
     }
 
 }
