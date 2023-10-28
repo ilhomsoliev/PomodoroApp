@@ -21,6 +21,8 @@ fun SettingsScreen(
 
     val isVibrationDialogActive = remember { mutableStateOf(false) }
     val isLanguageDialogActive = remember { mutableStateOf(false) }
+    val isDevelopersBsActive = remember { mutableStateOf(false) }
+
     // Time and duration
     val workTime by vm.workTime.collectAsState()
     val shortBreakTime by vm.shortBreakTime.collectAsState()
@@ -36,6 +38,7 @@ fun SettingsScreen(
             longBreakTime = longBreakTime ?: 0,
             isVibrationDialogActive = isVibrationDialogActive.value,
             isLanguageDialogActive = isLanguageDialogActive.value,
+            isDevelopersBsActive = isDevelopersBsActive.value,
         ),
         object : SettingsCallback {
             override fun onBack() {
@@ -63,11 +66,11 @@ fun SettingsScreen(
             }
 
             override fun onLanguageClick() {
-                TODO("Not yet implemented")
+                this.onIsLanguageDialogChange(true)
             }
 
             override fun onDevelopersClick() {
-                TODO("Not yet implemented")
+                onIsDevelopersBsActiveChange(true)
             }
 
             override fun onBackgroundClick() {
@@ -96,6 +99,10 @@ fun SettingsScreen(
 
             override fun onIsLanguageDialogChange(value: Boolean) {
                 isLanguageDialogActive.value = value
+            }
+
+            override fun onIsDevelopersBsActiveChange(value: Boolean) {
+                isDevelopersBsActive.value = value
             }
 
         }

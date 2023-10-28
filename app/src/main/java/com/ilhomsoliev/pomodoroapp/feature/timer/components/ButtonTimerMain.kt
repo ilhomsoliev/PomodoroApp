@@ -26,37 +26,34 @@ fun ButtonTimerMain(
     Box(
         modifier = modifier
     ) {
-        AnimatedContent(targetState = timerState, label = "") {
-            when (it) {
-                TimerState.INACTIVE -> {
-                    StartButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.TopCenter)
+        AnimatedContent(targetState = timerState == TimerState.INACTIVE, label = "") {
+            if (it) {
+                StartButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                ) {
+                    onStartButtonClick()
+                }
+
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ControlButton(
+                        if (TimerState.ACTIVE == timerState) Pause else Icons.Default.PlayArrow,
+                        "Pause"
                     ) {
                         onStartButtonClick()
                     }
-
-                }
-
-                else -> {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ControlButton(
-                            if (TimerState.ACTIVE == it) Pause else Icons.Default.PlayArrow,
-                            "Pause"
-                        ) {
-                            onStartButtonClick()
-                        }
-                        ControlButton(Square, "Quit") {
-                            onSkipButtonClick()
-                        }
+                    ControlButton(Square, "Quit") {
+                        onSkipButtonClick()
                     }
                 }
             }
+
         }
     }
 }

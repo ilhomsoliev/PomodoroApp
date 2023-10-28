@@ -7,7 +7,7 @@ import android.util.Log
 import com.ilhomsoliev.pomodoroapp.core.Constants
 import org.greenrobot.eventbus.EventBus
 
-class AlarmReceiver(val listener: OnAlarmReceivedListener) : BroadcastReceiver() {
+class AlarmReceiver(private val listener: OnAlarmReceivedListener) : BroadcastReceiver() {
 
     interface OnAlarmReceivedListener {
         fun onAlarmReceived()
@@ -21,7 +21,7 @@ class AlarmReceiver(val listener: OnAlarmReceivedListener) : BroadcastReceiver()
         val oneMinuteLeft = intent.getBooleanExtra(Constants.ONE_MINUTE_LEFT, false)
         if (oneMinuteLeft) {
             Log.v(TAG, "onReceive oneMinuteLeft")
-            // EventBus.getDefault().post(OneMinuteLeft())
+            EventBus.getDefault().post(Constants.OneMinuteLeft())
             return
         }
         val sessionType = SessionType.valueOf(intent.getStringExtra(Constants.SESSION_TYPE)!!)

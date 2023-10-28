@@ -53,7 +53,9 @@ fun TimerMain(
             isInactive = isInActive,
             sessionType = sessionType,
         )
+
         Spacer(modifier = Modifier.height(32.dp))
+
         Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
             Image(
                 modifier = Modifier.size(26.dp),

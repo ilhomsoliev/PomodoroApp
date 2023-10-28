@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ilhomsoliev.pomodoroapp.R
 import com.ilhomsoliev.pomodoroapp.core.Constants
 import com.ilhomsoliev.pomodoroapp.core.PreferenceUtil
@@ -81,6 +83,14 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
+                    val controller = rememberSystemUiController()
+
+                    LaunchedEffect(key1 = Unit, block = {
+                        controller.setSystemBarsColor(Color(0xFFFFFFFF))
+                        controller.setNavigationBarColor(Color(0xFFFFFFFF))
+                        controller.setStatusBarColor(Color(0xFFFFFFFF))
+                    })
+
                     val duration by currentSession.duration.observeAsState()
                     val timerState by currentSession.timerState.observeAsState()
                     val sessionType by currentSession.sessionType.observeAsState()
@@ -109,8 +119,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                             duration = duration?.toInt()?.div(1000) ?: 0,
                             isInActive = timerState == TimerState.INACTIVE,
                             sessionType = sessionType,
-
-                            )
+                        )
 
                         ButtonTimerMain(
                             modifier = Modifier
@@ -139,6 +148,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     @Subscribe
     fun onEventMainThread(o: Any?) {
         // TODO
+        o.printToLog("onEventMainThread TimerFragment")
         if (o is Constants.FinishWorkEvent) {
             (o).printToLog("Hello on Event FinishWorkEvent")
             if (PreferenceUtil.isAutoStartBreak) {

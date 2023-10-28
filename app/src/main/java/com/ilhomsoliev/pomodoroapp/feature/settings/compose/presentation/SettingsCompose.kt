@@ -8,7 +8,10 @@ import androidx.compose.ui.Modifier
 import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.SettingsTopBar
 import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.main_settings.MainSettingsScreen
 import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.time_duration_screen.TimeDurationScreen
+import com.ilhomsoliev.pomodoroapp.shared.bs.DevelopersModalBs
+import com.ilhomsoliev.pomodoroapp.shared.dialogs.customDialogs.LanguageSettingsDialog
 import com.ilhomsoliev.pomodoroapp.shared.dialogs.customDialogs.VibrationSettingsDialog
+import com.ilhomsoliev.pomodoroapp.shared.model.LanguageEnum
 import com.ilhomsoliev.pomodoroapp.shared.model.VibrationTypeEnum
 
 data class SettingsState(
@@ -20,8 +23,8 @@ data class SettingsState(
     val longBreakTime: Int,
     val isVibrationDialogActive: Boolean,
     val isLanguageDialogActive: Boolean,
-
-    )
+    val isDevelopersBsActive: Boolean,
+)
 
 interface SettingsCallback {
     fun onBack()
@@ -38,6 +41,7 @@ interface SettingsCallback {
     fun onWorkTimeChange(value: Int)
     fun onIsVibrationDialogChange(value: Boolean)
     fun onIsLanguageDialogChange(value: Boolean)
+    fun onIsDevelopersBsActiveChange(value: Boolean)
 }
 
 @Composable
@@ -59,6 +63,13 @@ fun SettingsContent(
         }
     }
 
+    DevelopersModalBs(
+        showBottomSheet = state.isDevelopersBsActive,
+        onDismiss = {
+            callback.onIsDevelopersBsActiveChange(false)
+        },
+    )
+
     VibrationSettingsDialog(
         isDialogShown = state.isVibrationDialogActive,
         vibrationType = VibrationTypeEnum.None,
@@ -71,5 +82,19 @@ fun SettingsContent(
         {
 
             callback.onIsVibrationDialogChange(false)
+        })
+
+    LanguageSettingsDialog(
+        isDialogShown = state.isLanguageDialogActive,
+        vibrationType = LanguageEnum.English,
+        onDismissRequest = {
+            callback.onIsLanguageDialogChange(false)
+        },
+        {
+            callback.onIsLanguageDialogChange(false)
+        },
+        {
+
+            callback.onIsLanguageDialogChange(false)
         })
 }
