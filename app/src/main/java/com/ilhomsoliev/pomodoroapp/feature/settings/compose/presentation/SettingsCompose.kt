@@ -13,7 +13,10 @@ data class SettingsState(
     val isDarkTheme: Boolean,
     val isOnTimerDurationScreen: Boolean,
     val isLongBreakToggleActive: Boolean,
-)
+    val workTime: Int,
+    val shortBreakTime: Int,
+    val longBreakTime: Int,
+    )
 
 interface SettingsCallback {
     fun onBack()
@@ -27,6 +30,7 @@ interface SettingsCallback {
     fun onDisableSoundAndVibrationClick()
     fun onDoNotDisturbClick()
     fun onEnableLongBreaksClick(value: Boolean)
+    fun onWorkTimeChange(value: Int)
 }
 
 @Composable

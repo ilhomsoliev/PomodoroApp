@@ -11,15 +11,25 @@ fun SettingsScreen(
     vm: SettingsViewModel,
     onBack: () -> Unit,
 ) {
+
+    // Settings Main
     val isSystemDark = isSystemInDarkTheme()
     val isOnTimerDurationScreen by vm.isOnTimerDurationScreen.collectAsState()
     val isLongBreakToggleActive by vm.isLongBreakToggleActive.collectAsState()
+
+    // Time and duration
+    val workTime by vm.workTime.collectAsState()
+    val shortBreakTime by vm.shortBreakTime.collectAsState()
+    val longBreakTime by vm.longBreakTime.collectAsState()
 
     SettingsContent(
         SettingsState(
             isDarkTheme = isSystemDark,
             isOnTimerDurationScreen = isOnTimerDurationScreen,
             isLongBreakToggleActive = isLongBreakToggleActive,
+            workTime = workTime ?: 0,
+            shortBreakTime = shortBreakTime ?: 0,
+            longBreakTime = longBreakTime ?: 0,
         ),
         object : SettingsCallback {
             override fun onBack() {
@@ -68,6 +78,10 @@ fun SettingsScreen(
 
             override fun onEnableLongBreaksClick(value: Boolean) {
                 vm.onIsLongBreakToggleActiveChange()
+            }
+
+            override fun onWorkTimeChange(value: Int) {
+                vm.onWorkTimeChange(value)
             }
 
         }

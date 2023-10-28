@@ -20,7 +20,7 @@ object PreferenceUtil {
     ) = sharedPreferences.unregisterOnSharedPreferenceChangeListener(changeListener)
 
     // TODO move to another package
-    fun getSessionDuration(sessionType: SessionType?): Long {
+    fun getSessionDuration(sessionType: SessionType?): Long { // In minutes
         val duration: Long = when (sessionType) {
             SessionType.WORK -> workDuration.toLong()
             SessionType.BREAK -> breakDuration.toLong()

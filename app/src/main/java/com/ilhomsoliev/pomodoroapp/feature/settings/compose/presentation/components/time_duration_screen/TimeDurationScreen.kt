@@ -23,12 +23,12 @@ fun TimeDurationScreen(
         }
 
         item(key = 2) {
-            CustomSliderItem(title = "Work Time", currentValue = 25) {
-
+            CustomSliderItem(title = "Work Time", currentValue = state.workTime) {
+                callback.onWorkTimeChange(it)
             }
         }
         item(key = 3) {
-            CustomSliderItem(title = "Short break", currentValue = 25) {
+            CustomSliderItem(title = "Short break", currentValue = state.shortBreakTime) {
 
             }
         }
