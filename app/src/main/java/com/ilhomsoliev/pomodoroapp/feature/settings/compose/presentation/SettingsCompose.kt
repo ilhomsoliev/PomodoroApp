@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.SettingsTopBar
 import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.main_settings.MainSettingsScreen
 import com.ilhomsoliev.pomodoroapp.feature.settings.compose.presentation.components.time_duration_screen.TimeDurationScreen
+import com.ilhomsoliev.pomodoroapp.shared.dialogs.customDialogs.VibrationSettingsDialog
+import com.ilhomsoliev.pomodoroapp.shared.model.VibrationTypeEnum
 
 data class SettingsState(
     val isDarkTheme: Boolean,
@@ -16,6 +18,9 @@ data class SettingsState(
     val workTime: Int,
     val shortBreakTime: Int,
     val longBreakTime: Int,
+    val isVibrationDialogActive: Boolean,
+    val isLanguageDialogActive: Boolean,
+
     )
 
 interface SettingsCallback {
@@ -31,6 +36,8 @@ interface SettingsCallback {
     fun onDoNotDisturbClick()
     fun onEnableLongBreaksClick(value: Boolean)
     fun onWorkTimeChange(value: Int)
+    fun onIsVibrationDialogChange(value: Boolean)
+    fun onIsLanguageDialogChange(value: Boolean)
 }
 
 @Composable
@@ -38,6 +45,7 @@ fun SettingsContent(
     state: SettingsState,
     callback: SettingsCallback,
 ) {
+
     Column(modifier = Modifier.fillMaxWidth()) {
         SettingsTopBar {
             callback.onBack()
@@ -50,4 +58,18 @@ fun SettingsContent(
             }
         }
     }
+
+    VibrationSettingsDialog(
+        isDialogShown = state.isVibrationDialogActive,
+        vibrationType = VibrationTypeEnum.None,
+        onDismissRequest = {
+            callback.onIsVibrationDialogChange(false)
+        },
+        {
+            callback.onIsVibrationDialogChange(false)
+        },
+        {
+
+            callback.onIsVibrationDialogChange(false)
+        })
 }
