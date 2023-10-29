@@ -71,6 +71,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         super.onViewCreated(view, savedInstanceState)
         val homeBinding = FragmentTimerBinding.bind(view)
         _binding = TimerBinding(homeBinding)
+
         if (PreferenceUtil.isFirstRun) {
             // show app intro
             /*val i = Intent(this, MainIntroActivity::class.java)
@@ -151,7 +152,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
         o.printToLog("onEventMainThread TimerFragment")
         if (o is Constants.FinishWorkEvent) {
             (o).printToLog("Hello on Event FinishWorkEvent")
-            if (PreferenceUtil.isAutoStartBreak) {
+            if (PreferenceUtil.isAutoStartBreak || true) {
                 /*if (PreferenceUtil.isFlashingNotificationEnabled()) {
                     baseViewModel.enableFlashingNotification = true
                 }*/
