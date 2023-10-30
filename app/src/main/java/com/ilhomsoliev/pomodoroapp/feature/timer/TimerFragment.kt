@@ -74,9 +74,6 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
 
         if (PreferenceUtil.isFirstRun) {
             // show app intro
-            /*val i = Intent(this, MainIntroActivity::class.java)
-            startActivity(i)
-            PreferenceUtil.isFirstRun = false*/
         }
         val overalltime = PreferenceUtil.getSessionDuration(SessionType.WORK)
 
