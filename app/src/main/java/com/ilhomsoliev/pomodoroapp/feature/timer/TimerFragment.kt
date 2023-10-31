@@ -185,8 +185,6 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
     }
 
     private fun stopFlashingNotification() {
-        /*binding.whiteCover.visibility = View.GONE
-        binding.whiteCover.clearAnimation()*/
         baseViewModel.enableFlashingNotification = false
     }
 
