@@ -190,7 +190,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupListeners() {
-        // aks laksdn next comment just for
+        // aks laksdn next comment just for asdf asd fasd fas dfa sd
         /*binding.timeView.setOnTouchListener(object :
             OnSwipeTouchListener(this@TimerFragment.activity) {
             public override fun onSwipeRight(view: View) {
