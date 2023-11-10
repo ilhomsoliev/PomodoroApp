@@ -195,7 +195,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
             OnSwipeTouchListener(this@TimerFragment.activity) {
             public override fun onSwipeRight(view: View) {
                 onSkipSession()
-            }
+            }jkbjkbkjbkb
 
             public override fun onSwipeLeft(view: View) {
                 onSkipSession()
