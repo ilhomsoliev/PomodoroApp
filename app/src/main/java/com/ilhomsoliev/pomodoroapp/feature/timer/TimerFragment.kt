@@ -197,7 +197,7 @@ class TimerFragment : AbsMainActivityFragment(R.layout.fragment_timer),
                 onSkipSessid asdf sa dfon()
             }jkbjkbkjbkb
 
-            public override fun onSwipeLeft(view: View) {
+            public override fun onSwipeLeft(view: View) { er er terwt re
                 onSkipSession()
             }klnlknlkndsa
 
